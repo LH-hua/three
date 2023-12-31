@@ -8,6 +8,7 @@
 import { onMounted } from 'vue';
 import * as THREE from 'three'
 import { OrbitControls } from 'three/addons/controls/OrbitControls.js';
+// import { Line2 } from "three/examples/jsm/lines/Line2";
 // import { Geometry } from 'three/examples/jsm/deprecated/Geometry';
 import * as d3 from 'd3'
 import axios from 'axios'
@@ -47,57 +48,52 @@ function cube() {
             .translate([0, 0])
         data.features.forEach(ele => {
             const { geometry, properties } = ele
-            // const province = new THREE.Object3D()
             console.log(properties)
+            // const province = new THREE.Object3D()
             geometry.coordinates.forEach(multiPolygon => {
-                const geometry = new THREE.BufferGeometry()
-                const lineMaterial = new THREE.LineBasicMaterial({
-                    color: '#2defff',
-                })
+                // const geometry = new THREE.BufferGeometry()
                 multiPolygon.forEach(polygon => {
                     // console.log(polygon)
-                    // const shape = new THREE.Shape()
-                    const vertices = []
-                    polygon.forEach((item) => {
-                        const [x, y] = projection(item)
-                        vertices.push(x, y, 3)
-                        // console.log(x,y)
-                        // if (i === 0) {
-                        //     shape.moveTo(x, -y)
-                        // }
-                        // shape.lineTo(x, -y)
-                        // geometry.vertices.push(new THREE.Vector3(x, -y, 5))
+                    const shape = new THREE.Shape()
+                    const lineGeomtry = new THREE.BufferGeometry()
+                    const lineMaterial = new THREE.LineBasicMaterial({
+                        color: 'white',
                     })
-                    geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
-
-                    // const material = new THREE.MeshBasicMaterial({
-                    //     color: '#2defff',
-                    //     transparent: true,
-                    //     opacity: 0.6,
-                    // })
-                    // const material1 = new THREE.MeshBasicMaterial({
-                    //     color: '#3480C4',
-                    //     transparent: true,
-                    //     opacity: 0.5,
-                    // })
-                    // const extrudeSettings = {
-                    //     depth: 10,
-                    //     bevelEnabled: false,
-                    // }
-
-                    // const geometry1 = new THREE.ExtrudeGeometry(
-                    //     geometry,
-                    //     extrudeSettings
-                    // )
-                    const line = new THREE.Line(geometry, lineMaterial)
-                    // const mesh = new THREE.Mesh(geometry1, [material, material1])
+                    const vertices = []
+                    polygon.forEach((item, i) => {
+                        const [x, y] = projection(item)
+                        // console.log(x, y)
+                        if (i === 0) {
+                            shape.moveTo(x, -y)
+                        }
+                        shape.lineTo(x, -y)
+                        vertices.push(new THREE.Vector3(x, -y, 4.0))
+                    })
+                    const extrudeSettings = {
+                        depth: 3,
+                        bevelEnabled: true,
+                    }
+                    const geometry1 = new THREE.ExtrudeGeometry(shape, extrudeSettings)
+                    const material = new THREE.MeshBasicMaterial({
+                        color: '#2defff',
+                        transparent: true,
+                        opacity: 0.6,
+                    })
+                    const material1 = new THREE.MeshBasicMaterial({
+                        color: '#3480C4',
+                        // transparent: true,
+                        opacity: 0.8,
+                    })
+                    // lineGeomtry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
+                    // lineGeomtry.setAttribute('position', new THREE.BufferAttribute(new Float32Array(vertices), 3))
+                    lineGeomtry.setFromPoints(vertices)
+                    const mesh = new THREE.Mesh(geometry1, [material, material1])
+                    const line = new THREE.Line(lineGeomtry, lineMaterial)
+                    // console.log(mesh)
+                    scene.add(mesh)
                     scene.add(line)
-                    // scene.add(mesh)
 
                 })
-
-                // province.add(line)
-
             })
         });
     }
