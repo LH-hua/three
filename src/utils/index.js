@@ -9,7 +9,15 @@ class Map3D {
     init() {
         this.scene = new THREE.Scene()
         this.camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000)
-        this.render = new THREE.WebGLRenderer()
+        this.render = new THREE.WebGLRenderer({
+          antialias: true, // true/false表示是否开启反锯齿
+          alpha: true, // true/false 表示是否可以设置背景色透明
+          precision: 'highp', // highp/mediump/lowp 表示着色精度选择
+          premultipliedAlpha: false, // true/false 表示是否可以设置像素深度（用来度量图像的分率）
+          preserveDrawingBuffer: true, // true/false 表示是否保存绘图缓冲
+          maxLights: 3, // 最大灯光数
+          stencil: false // false/true 表示是否使用模板字体或图案
+        })
         this.render.setSize(window.innerWidth, window.innerHeight)
         this.node.appendChild(this.render.domElement)
         this.addHelper()
@@ -21,7 +29,7 @@ class Map3D {
     //         this.generateGeometry(jsonData)
     //     })
     // }
-    generateGeometry(jsonData){
+    generateGeometry(jsondata){
         // 初始化一个地图对象
         this.map = new THREE.Object3D()
         // 墨卡托投影转换
@@ -84,6 +92,10 @@ class Map3D {
           this.map.add(province)
         })
         this.scene.add(this.map)
+    }
+    animate(){
+      THREE.update()
+      requestAnimationFrame(animate)
     }
     renderMap(){
         
