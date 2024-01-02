@@ -42,6 +42,7 @@ function cube() {
     })
 
     function map(data) {
+
         console.log(data)
         const projection = d3
             .geoMercator()
