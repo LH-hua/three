@@ -1,6 +1,9 @@
 import { createApp } from 'vue'
 import './style.css'
 import App from './App.vue'
+// import amap from './utils/amap/config'
+
+// new amap()
 
 import router from './router/router.js'
 
