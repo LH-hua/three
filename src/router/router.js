@@ -10,6 +10,10 @@ const router = createRouter({
     {
       path: '/three/amap',
       component:() => import('@/views/02amap/index.vue')
+    },
+    {
+      path: '/three/amap/01',
+      component:() => import('@/views/03amap/index.vue')
     }
     ]
 })

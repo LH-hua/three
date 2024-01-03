@@ -1,14 +1,15 @@
 <script setup>
 import { onMounted, onUnmounted } from 'vue';
 import AMapLoader from '@amap/amap-jsapi-loader';
-import test from '@/assets/json/贵州省.json';
 import * as THREE from 'three';
+// import axios from 'axios';
+import test from '@/assets/json/china.json';
 
 let container;
 let map = null;
 let paths;
 let customCoords;
-const height = 5000;
+const height = 15000;
 // THREE相关变量
 let camera, scene, renderer;
 
@@ -161,28 +162,26 @@ onMounted(() => {
 		version: '2.0',
 		plugins: [], // 需要使用的的插件列表，如比例尺'AMap.Scale'等
 	}).then((AMap) => {
+		// axios.get('https://geo.datav.aliyun.com/areas_v3/bound/geojson', { params: { code: 100000 } }).then((res) => {});
 		container = document.getElementById('container');
 		map = new AMap.Map('container', {
 			center: [106.713478, 26.578343],
 			zooms: [2, 20],
 			mask: test.features[0].geometry.coordinates,
-			// zoom: 9,
+			zoom: 9,
 			viewMode: '3D',
 			pitch: 70,
 			layers: [new AMap.TileLayer.Satellite()],
 		});
+		const SkyLayer = map.getLayers().find((i) => i.CLASS_NAME == 'AMap.SkyLayer');
+		console.log(SkyLayer);
+		console.log(map);
 		map.on('complete', () => {
 			customCoords = map.customCoords;
 			let path = test.features[0].geometry.coordinates[0];
 			paths = customCoords.lngLatsToCoords(path)[0];
 			initLayer();
 			window.addEventListener('resize', onWindowResize);
-			const marker = new AMap.Marker({
-				icon: 'https://webapi.amap.com/theme/v1.3/markers/n/mark_b.png',
-				position: [119.50129462, 29.63775178],
-				anchor: 'bottom-center',
-			});
-			map.add(marker);
 		});
 	});
 });
